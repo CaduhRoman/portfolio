@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cadu Romanow — Dados, código e construção de sistemas.">
+  <title>Cadu Romanow — Dados & Sistemas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style-cadu.css">
+</head>
+
+<body>
+  <div class="site-frame">
+    <header class="header">
+      <a class="brand" href="/" aria-label="Cadu Romanow">
+        <span class="brand-mark">CR</span>
+        <span>Cadu Romanow</span>
+      </a>
+
+      <nav class="socials" aria-label="Redes sociais">
+        <a href="https://github.com/caduhroman" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/carlos-eduardo-romanow-silva-076260281/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:caduromanow">E-mail</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO: o elemento principal é a composição, não um card -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-index">01 / INTRO</div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">DATA · CODE · SYSTEMS</p>
+          <h1 id="hero-title">
+            Eu gosto de
+            <span>entender</span>
+            coisas.
+          </h1>
+
+          <p class="hero-description">
+            Transformo problemas confusos em estruturas que fazem sentido —
+            através de dados, código e sistemas.
+          </p>
+
+          <a class="hero-link" href="#work">
+            <span>ver o trabalho</span>
+            <span class="arrow">↘</span>
+          </a>
+        </div>
+
+        <!-- Diagrama abstrato: deve parecer parte da identidade, não decoração -->
+        <div class="system-map" aria-hidden="true">
+          <div class="map-label map-label-a">INPUT</div>
+          <div class="map-label map-label-b">PROCESS</div>
+          <div class="map-label map-label-c">OUTPUT</div>
+
+          <svg viewBox="0 0 520 420" role="presentation">
+            <path class="map-line line-a" d="M70 325 L190 245 L290 280 L430 105" />
+            <path class="map-line line-b" d="M190 245 L235 100 L430 105" />
+            <path class="map-line line-c" d="M290 280 L350 365 L430 105" />
+            <path class="map-line faint" d="M70 325 L350 365" />
+
+            <circle class="map-node node-a" cx="70" cy="325" r="5" />
+            <circle class="map-node node-b" cx="190" cy="245" r="7" />
+            <circle class="map-node node-c" cx="235" cy="100" r="4" />
+            <circle class="map-node node-d" cx="290" cy="280" r="5" />
+            <circle class="map-node node-e" cx="350" cy="365" r="4" />
+            <circle class="map-node node-f" cx="430" cy="105" r="8" />
+          </svg>
+
+          <div class="map-coordinate">23°32' / 46°38'</div>
+        </div>
+
+        <div class="hero-foot">
+          <span>SCROLL TO EXPLORE</span>
+          <span class="hero-rule"></span>
+          <span>2026</span>
+        </div>
+      </section>
+
+      <!-- INTRO -->
+      <section class="statement">
+        <div class="section-number">02</div>
+        <div class="statement-text">
+          <p class="section-kicker">A FORMA DE TRABALHAR</p>
+          <h2>
+            Não me interessa apenas
+            <em>usar</em> ferramentas.
+            Quero entender o que existe por trás delas.
+          </h2>
+        </div>
+        <p class="statement-aside">
+          Análise de dados, automação e desenvolvimento se encontram
+          quando o objetivo deixa de ser apenas fazer funcionar
+          e passa a ser construir algo que faça sentido.
+        </p>
+      </section>
+
+      <!-- WORK -->
+      <section class="work" id="work" aria-labelledby="work-title">
+        <div class="section-top">
+          <div>
+            <span class="section-number">03</span>
+            <p class="section-kicker">TRABALHO SELECIONADO</p>
+          </div>
+          <h2 id="work-title">O que eu construo.</h2>
+        </div>
+
+        <div class="work-list">
+          <a class="work-item" href="#" aria-label="Projeto 01">
+            <span class="work-id">001</span>
+            <div class="work-main">
+              <h3>Projeto principal</h3>
+              <p>Dados → transformação → decisão.</p>
+            </div>
+            <span class="work-meta">PYTHON / SQL</span>
+            <span class="work-arrow">↗</span>
+          </a>
+
+          <a class="work-item" href="#" aria-label="Projeto 02">
+            <span class="work-id">002</span>
+            <div class="work-main">
+              <h3>Projeto de automação</h3>
+              <p>Menos trabalho repetitivo. Mais sistema.</p>
+            </div>
+            <span class="work-meta">AUTOMAÇÃO / BI</span>
+            <span class="work-arrow">↗</span>
+          </a>
+
+          <a class="work-item" href="#" aria-label="Projeto 03">
+            <span class="work-id">003</span>
+            <div class="work-main">
+              <h3>Projeto experimental</h3>
+              <p>Uma ideia transformada em software.</p>
+            </div>
+            <span class="work-meta">CODE / BUILD</span>
+            <span class="work-arrow">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- CAPABILITIES -->
+      <section class="capabilities" aria-labelledby="capabilities-title">
+        <div class="section-number">04</div>
+
+        <div class="capabilities-heading">
+          <p class="section-kicker">FERRAMENTAS</p>
+          <h2 id="capabilities-title">Com o que eu penso.</h2>
+        </div>
+
+        <div class="capability-grid">
+          <div class="capability">
+            <span>01</span>
+            <h3>Dados</h3>
+            <p>SQL · Power BI · ETL · análise</p>
+          </div>
+          <div class="capability">
+            <span>02</span>
+            <h3>Código</h3>
+            <p>Python · APIs · automação · scripting</p>
+          </div>
+          <div class="capability">
+            <span>03</span>
+            <h3>Sistemas</h3>
+            <p>Modelagem · integração · processos</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- OUTRO -->
+      <section class="closing" aria-labelledby="closing-title">
+        <span class="closing-index">05 / NEXT</span>
+        <h2 id="closing-title">
+          Ainda estou
+          <span>construindo.</span>
+        </h2>
+        <p>O portfólio é só uma parte do processo.</p>
+
+        <div class="closing-links">
+          <a href="#work">Projetos <span>↗</span></a>
+          <a href="https://github.com/caduromanow" target="_blank" rel="noopener">GitHub <span>↗</span></a>
+          <a href="https://linkedin.com/in/caduromanow" target="_blank" rel="noopener">LinkedIn <span>↗</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>CADU ROMANOW</span>
+      <span>FEITO COM CÓDIGO E CURIOSIDADE</span>
+      <span>© 2026</span>
+    </footer>
+  </div>
+</body>
+</html>
