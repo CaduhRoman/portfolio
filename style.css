@@ -141,6 +141,51 @@ main {
   position: relative;
 }
 
+.language-switch {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 8px;
+  border: 1px solid rgba(247, 247, 242, .16);
+  background: rgba(5, 5, 5, .72);
+  backdrop-filter: blur(14px);
+}
+
+.language-switch button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  color: rgba(247, 247, 242, .58);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.language-switch button:hover,
+.language-switch button.active {
+  color: var(--ink);
+  border-color: rgba(224, 54, 45, .5);
+  background: rgba(224, 54, 45, .16);
+}
+
+.language-switch span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 25px;
+  line-height: 1;
+}
+
 .portrait-shell {
   position: relative;
   aspect-ratio: 4 / 5;
