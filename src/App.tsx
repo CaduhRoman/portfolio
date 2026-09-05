@@ -86,7 +86,7 @@ const copy = {
     },
     contact: {
       eyebrow: "Contato",
-      title: "Vamos construir uma conversa a partir dos dados.",
+      title: "Oportunidades e/ou requests.",
       status: "Disponível",
       available:
         "Aberto para oportunidades em Analytics Engineering, Data Analytics, System Analytics e Desenvolvimento.",
