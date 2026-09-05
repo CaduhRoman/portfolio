@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 640" role="img" aria-labelledby="title">
+  <title id="title">UFMS</title>
+  <g fill="none" stroke="#f7f7f2" stroke-width="18" stroke-linejoin="miter">
+    <path d="M56 404c44-38 117-57 204-57s160 19 204 57"/>
+    <path d="M56 404c44 34 117 52 204 52s160-18 204-52"/>
+    <path d="M56 404h408"/>
+    <path d="M88 382l136 36"/>
+    <path d="M432 382l-136 36"/>
+    <path d="M116 366l108 52"/>
+    <path d="M404 366l-108 52"/>
+  </g>
+  <g fill="#f7f7f2">
+    <rect x="164" y="112" width="24" height="260"/>
+    <rect x="198" y="112" width="24" height="260"/>
+    <rect x="232" y="112" width="24" height="260"/>
+    <rect x="266" y="96" width="24" height="276"/>
+    <rect x="300" y="78" width="24" height="294"/>
+    <rect x="334" y="56" width="24" height="316"/>
+    <rect x="368" y="112" width="24" height="260"/>
+    <rect x="402" y="112" width="24" height="260"/>
+  </g>
+  <text
+    x="260"
+    y="575"
+    fill="#f7f7f2"
+    font-family="Arial Black, Arial, sans-serif"
+    font-size="92"
+    font-weight="900"
+    text-anchor="middle"
+  >UFMS</text>
+</svg>
