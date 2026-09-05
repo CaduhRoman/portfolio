@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dashCeeImage from "../assets/dashcee.png";
 import dataModelingImage from "../assets/datamodeling.png";
 import portraitImage from "../assets/eu.png";
@@ -19,7 +19,7 @@ const copy = {
     nav: { skills: "Skills", career: "Carreira", contact: "Contato" },
     hero: {
       eyebrow: "Data Analyst · System Analytics · Development",
-      title: "Dados com contexto, clareza e intenção.",
+      title: "Eu construo, analiso e aprendo com dados.",
       paragraphs: [
         "Sou Carlos Romanow, um profissional de dados em construção constante. Meu interesse está em entender sistemas, estruturar bases e transformar regras de negócio em modelos analíticos confiáveis.",
         "Trabalho entre analytics engineering, estatística aplicada e desenvolvimento. Gosto de rotinas de alta produtividade relacionadas a dados, desenvolvimento e sistemas.",
@@ -100,7 +100,7 @@ const copy = {
     nav: { skills: "Skills", career: "Career", contact: "Contact" },
     hero: {
       eyebrow: "Data Analyst · System Analytics · Development",
-      title: "Data with context, clarity and intent.",
+      title: "I build, analyze, and learn from data.",
       paragraphs: [
         "I am Carlos Romanow, a data professional in constant development. My interest is in understanding systems, structuring data foundations and translating business rules into reliable analytical models.",
         "I work across analytics engineering, applied statistics and development. I enjoy high-productivity routines related to data, systems and practical analytical solutions.",
@@ -264,14 +264,14 @@ function Hero({
 }) {
   return (
     <section className="hero-section" id="inicio" aria-labelledby="hero-title">
-      <div className="portrait-panel">
+      <div className="portrait-panel" data-reveal>
         <LanguageSwitch language={language} onChange={onLanguageChange} />
         <div className="portrait-shell">
           <img src={portraitImage} alt="Carlos Romanow" />
         </div>
       </div>
 
-      <div className="intro-panel">
+      <div className="intro-panel" data-reveal>
         <p className="eyebrow">{content.hero.eyebrow}</p>
         <h1 id="hero-title">{content.hero.title}</h1>
         <div className="intro-copy">
@@ -306,14 +306,14 @@ function Hero({
 function Skills({ content }: { content: (typeof copy)[Language] }) {
   return (
     <section className="section-block skills-section" id="skills" aria-labelledby="skills-title">
-      <div className="section-heading">
+      <div className="section-heading" data-reveal>
         <p className="eyebrow">{content.skills.eyebrow}</p>
         <h2 id="skills-title">{content.skills.title}</h2>
         <p>{content.skills.description}</p>
       </div>
 
       <div className="skills-layout">
-        <article className="education-card">
+        <article className="education-card" data-reveal>
           <img className="ufms-mark" src={ufmsMark} alt="" />
           <p className="project-kind">{content.skills.educationLabel}</p>
           <h3>UFMS</h3>
@@ -321,7 +321,7 @@ function Skills({ content }: { content: (typeof copy)[Language] }) {
           <strong>{content.skills.degree}</strong>
         </article>
 
-        <div className="certification-panel">
+        <div className="certification-panel" data-reveal>
           <p className="project-kind">{content.skills.certificationsLabel}</p>
           <div className="certification-list">
             {certifications.map((certification, index) => (
@@ -343,7 +343,7 @@ function Skills({ content }: { content: (typeof copy)[Language] }) {
 
       <div className="skill-highlight-grid">
         {content.skills.highlights.map((skill) => (
-          <article className="skill-highlight" key={skill.title}>
+          <article className="skill-highlight" data-reveal key={skill.title}>
             <h3>{skill.title}</h3>
             <p>{skill.description}</p>
           </article>
@@ -356,13 +356,13 @@ function Skills({ content }: { content: (typeof copy)[Language] }) {
 function Career({ content }: { content: (typeof copy)[Language] }) {
   return (
     <section className="section-block career-section" id="carreira" aria-labelledby="career-title">
-      <div className="section-heading">
+      <div className="section-heading" data-reveal>
         <p className="eyebrow">{content.career.eyebrow}</p>
         <h2 id="career-title">{content.career.title}</h2>
       </div>
 
       <div className="career-layout">
-        <article className="career-entry">
+        <article className="career-entry" data-reveal>
           <div className="company-heading">
             <img src={maringaLogo} alt="" />
             <div>
@@ -373,14 +373,14 @@ function Career({ content }: { content: (typeof copy)[Language] }) {
           <p>{content.career.description}</p>
         </article>
 
-        <div className="skill-cloud" aria-label="Technologies and skills">
+        <div className="skill-cloud" data-reveal aria-label="Technologies and skills">
           {skills.map((skill) => (
             <span key={skill}>{skill}</span>
           ))}
         </div>
       </div>
 
-      <div className="pex-track" aria-label={content.career.pexLabel}>
+      <div className="pex-track" data-reveal aria-label={content.career.pexLabel}>
         <div className="pex-marker" aria-hidden="true" />
         <div className="pex-content">
           <p className="project-kind">{content.career.pexLabel}</p>
@@ -395,7 +395,7 @@ function Career({ content }: { content: (typeof copy)[Language] }) {
 
       <div className="experience-projects" aria-label={content.career.projectsLabel}>
         {(content.career.projects as Project[]).map((project) => (
-          <article className="experience-project" key={project.title}>
+          <article className="experience-project" data-reveal key={project.title}>
             <img src={project.image} alt={`${project.title} preview`} />
             <div>
               <p className="project-kind">{project.kind}</p>
@@ -413,12 +413,12 @@ function Contact({ content }: { content: (typeof copy)[Language] }) {
   return (
     <section className="contact-section" id="contato" aria-labelledby="contact-title">
       <div className="contact-grid">
-        <div>
+        <div data-reveal>
           <p className="eyebrow">{content.contact.eyebrow}</p>
           <h2 id="contact-title">{content.contact.title}</h2>
         </div>
 
-        <div className="contact-panel">
+        <div className="contact-panel" data-reveal>
           <div className="contact-status">
             <span>{content.contact.status}</span>
             <p>{content.contact.available}</p>
@@ -459,7 +459,7 @@ function Contact({ content }: { content: (typeof copy)[Language] }) {
 
 function Footer({ content }: { content: (typeof copy)[Language] }) {
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" data-reveal>
       <div className="footer-mark">
         <span>CR</span>
       </div>
@@ -502,6 +502,31 @@ function IconLinkedin() {
 export default function App() {
   const [language, setLanguage] = useState<Language>("pt");
   const content = copy[language];
+
+  useEffect(() => {
+    const revealItems = document.querySelectorAll<HTMLElement>("[data-reveal]");
+
+    if (!("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
