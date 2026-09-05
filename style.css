@@ -743,14 +743,14 @@ main {
 .contact-section {
   scroll-margin-top: 78px;
   min-height: auto;
-  padding: 76px 0 64px;
+  padding: 68px 0 64px;
 }
 
 .contact-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
   gap: clamp(36px, 7vw, 92px);
-  align-items: end;
+  align-items: start;
 }
 
 .contact-panel {
