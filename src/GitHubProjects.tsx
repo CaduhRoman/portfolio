@@ -10,7 +10,7 @@ type GitHubProjectsProps = {
 const labels = {
   pt: {
     eyebrow: "Projetos",
-    title: "Meus repositórios",
+    title: "Meus trabalhos",
     description:
       "Projetos escolhidos manualmente e carregados pela API pública do GitHub, com detalhes do repositório e README renderizado dentro do portfólio.",
     loading: "Carregando repositórios",
@@ -24,7 +24,7 @@ const labels = {
   },
   en: {
     eyebrow: "Projects",
-    title: "Selected repositories.",
+    title: "My works.",
     description:
       "Manually selected projects loaded from the public GitHub API, with repository details and README rendered inside the portfolio.",
     loading: "Loading repositories",
@@ -95,7 +95,7 @@ export function GitHubProjects({ language }: GitHubProjectsProps) {
             <article className="github-project-card is-visible" data-reveal key={project.repo}>
               <div className="github-card-top">
                 <p className="project-kind">{project.language ?? "Repository"}</p>
-                <span>{formatDate(project.updatedAt, language)}</span>
+                {project.updatedAt && <span>{formatDate(project.updatedAt, language)}</span>}
               </div>
 
               <h3>{project.name}</h3>
@@ -112,8 +112,6 @@ export function GitHubProjects({ language }: GitHubProjectsProps) {
                   ))}
                 </div>
               )}
-
-              {project.error && <p className="github-error">{project.error}</p>}
 
               <div className="github-actions">
                 <button type="button" onClick={() => setSelectedProject(project)}>

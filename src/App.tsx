@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import dashCeeImage from "../assets/dashcee.png";
 import dataModelingImage from "../assets/datamodeling.png";
-import maringaLogo from "../assets/maringalogo.avif";
+import maringaLogo from "../assets/maringalogo-cropped.png";
 import spriteImage from "../assets/mysprite.gif";
 import { GitHubProjects } from "./GitHubProjects";
 import ufmsMark from "./assets/ufms-blue-mark.svg";
@@ -29,10 +29,10 @@ const copy = {
     },
     skills: {
       eyebrow: "Skills",
-      title: "Formação.",
+      title: "Minha Formação.",
       description:
         "Um resumo da minha formação, certificações e competências que sustentam meu trabalho com dados, processos e desenvolvimento aplicado.",
-      educationLabel: "Formação",
+      educationLabel: "Superior",
       postgraduateLabel: "Pós-graduação",
       postgraduateStatus: "Loading...",
       postgraduateDescription: "Próximo passo acadêmico em definição.",
@@ -60,6 +60,7 @@ const copy = {
       eyebrow: "Carreira",
       title: "Minha experiência.",
       period: "Set 2025 · Presente",
+      startDate: "2025-09-01",
       company: "Grupo Maringá",
       description:
         "Atuação em análise de dados, desenvolvimento de dashboards e leitura de processos para apoiar decisões e rotinas internas. Destaque para a participação como principal executante no PEx - Projeto de Excelência de implementação do ERP SIGIND na Sinterização, conectando sistemas, indicadores e pessoas.",
@@ -117,7 +118,7 @@ const copy = {
       title: "Education.",
       description:
         "A summary of the education, certifications and practical skills that support my work with data, processes and applied development.",
-      educationLabel: "Education",
+      educationLabel: "Superior",
       postgraduateLabel: "Postgraduate",
       postgraduateStatus: "Loading...",
       postgraduateDescription: "Next academic step in progress.",
@@ -145,6 +146,7 @@ const copy = {
       eyebrow: "Career",
       title: "My experience.",
       period: "Sep 2025 · Present",
+      startDate: "2025-09-01",
       company: "Grupo Maringá",
       description:
         "Work in data analysis, dashboard development and process understanding to support internal decisions and routines. Highlighted participation as the main executor in the PEx - Excellence Program project for implementing the SIGIND ERP in the Sintering area, connecting systems, indicators and people.",
@@ -386,7 +388,7 @@ function Skills({ content }: { content: (typeof copy)[Language] }) {
   );
 }
 
-function Career({ content }: { content: (typeof copy)[Language] }) {
+function Career({ content, language }: { content: (typeof copy)[Language]; language: Language }) {
   return (
     <section className="section-block career-section" id="carreira" aria-labelledby="career-title">
       <div className="section-heading" data-reveal>
@@ -399,7 +401,10 @@ function Career({ content }: { content: (typeof copy)[Language] }) {
           <div className="company-heading">
             <img src={maringaLogo} alt="" />
             <div>
-              <p className="period">{content.career.period}</p>
+              <div className="career-period">
+                <p className="period">{content.career.period}</p>
+                <span>{calculateTenure(content.career.startDate, language)}</span>
+              </div>
               <h3>{content.career.company}</h3>
             </div>
           </div>
@@ -413,45 +418,98 @@ function Career({ content }: { content: (typeof copy)[Language] }) {
         </div>
       </div>
 
-      <div className="contributions-heading" data-reveal>
-        <p className="project-kind">Participações e contribuições</p>
-      </div>
+      <div className="career-contributions" data-reveal>
+        <div className="contributions-heading">
+          <p className="project-kind">Participações e contribuições</p>
+          <span>{content.career.company}</span>
+        </div>
 
-      <div className="pex-track" data-reveal aria-label={content.career.pexLabel}>
-        <div className="pex-marker" aria-hidden="true" />
-        <div className="pex-content">
-          <div>
-            <p className="project-kind">{content.career.pexLabel}</p>
-            <h3>{content.career.pexTitle}</h3>
-            <ul>
-              {content.career.pexDetails.map((detail) => (
-                <li key={detail}>{detail}</li>
+        <div className="pex-track" aria-label={content.career.pexLabel}>
+          <div className="pex-marker" aria-hidden="true" />
+          <div className="pex-content">
+            <div>
+              <p className="project-kind">{content.career.pexLabel}</p>
+              <h3>{content.career.pexTitle}</h3>
+              <ul>
+                {content.career.pexDetails.map((detail) => (
+                  <li key={detail}>{detail}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="pex-tags" aria-label="Tecnologias usadas no PEx">
+              {pexTags.map((tag) => (
+                <span key={tag}>{tag}</span>
               ))}
-            </ul>
-          </div>
-
-          <div className="pex-tags" aria-label="Tecnologias usadas no PEx">
-            {pexTags.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="experience-projects" aria-label={content.career.projectsLabel}>
-        {(content.career.projects as Project[]).map((project) => (
-          <article className="experience-project" data-reveal key={project.title}>
-            <img src={project.image} alt={`${project.title} preview`} />
-            <div>
-              <p className="project-kind">{project.kind}</p>
-              <h3>{project.title}</h3>
-              <p>{project.summary}</p>
-            </div>
-          </article>
-        ))}
+        <div className="experience-projects" aria-label={content.career.projectsLabel}>
+          {(content.career.projects as Project[]).map((project) => (
+            <article className="experience-project" data-reveal key={project.title}>
+              <img src={project.image} alt={`${project.title} preview`} />
+              <div>
+                <p className="project-kind">{project.kind}</p>
+                <h3>{project.title}</h3>
+                <p>{project.summary}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
+}
+
+function calculateTenure(startDate: string, language: Language) {
+  const start = new Date(startDate);
+  const today = new Date();
+
+  let months = (today.getFullYear() - start.getFullYear()) * 12 + today.getMonth() - start.getMonth();
+
+  if (today.getDate() < start.getDate()) {
+    months -= 1;
+  }
+
+  months = Math.max(months, 0);
+
+  const years = Math.floor(months / 12);
+  const remainingMonths = months % 12;
+
+  if (language === "en") {
+    return formatTenureEn(years, remainingMonths);
+  }
+
+  return formatTenurePt(years, remainingMonths);
+}
+
+function formatTenurePt(years: number, months: number) {
+  const parts = [];
+
+  if (years > 0) {
+    parts.push(`${years} ${years === 1 ? "ano" : "anos"}`);
+  }
+
+  if (months > 0) {
+    parts.push(`${months} ${months === 1 ? "mês" : "meses"}`);
+  }
+
+  return parts.length > 0 ? parts.join(" e ") : "menos de 1 mês";
+}
+
+function formatTenureEn(years: number, months: number) {
+  const parts = [];
+
+  if (years > 0) {
+    parts.push(`${years} ${years === 1 ? "year" : "years"}`);
+  }
+
+  if (months > 0) {
+    parts.push(`${months} ${months === 1 ? "month" : "months"}`);
+  }
+
+  return parts.length > 0 ? parts.join(" and ") : "less than 1 month";
 }
 
 function Contact({ content }: { content: (typeof copy)[Language] }) {
@@ -580,7 +638,7 @@ export default function App() {
         <Hero content={content} language={language} onLanguageChange={setLanguage} />
         <Skills content={content} />
         <GitHubProjects language={language} />
-        <Career content={content} />
+        <Career content={content} language={language} />
         <Contact content={content} />
       </main>
       <Footer content={content} />

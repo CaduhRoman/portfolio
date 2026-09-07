@@ -70,7 +70,15 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
     });
 
     if (!repoResponse.ok) {
-      return { ...emptyProject, error: getGitHubErrorMessage(repoResponse.status, "repository") };
+      const readme = await fetchRawReadme(repo);
+      const fallback = getProjectFallbackFromReadme(repo, readme.content);
+
+      return {
+        ...emptyProject,
+        ...fallback,
+        readme: readme.content,
+        error: readme.content ? null : getGitHubErrorMessage(repoResponse.status, "repository"),
+      };
     }
 
     const repoData = (await repoResponse.json()) as GitHubRepoResponse;
@@ -80,7 +88,7 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
       repo,
       featured,
       name: repoData.name,
-      description: repoData.description,
+      description: repoData.description ?? getReadmeExcerpt(readme.content),
       url: repoData.html_url,
       homepage: repoData.homepage || null,
       language: repoData.language,
@@ -104,11 +112,13 @@ async function fetchReadme(repo: string): Promise<{ content: string | null; erro
     });
 
     if (response.status === 404) {
-      return { content: null, error: "README not found for this repository." };
+      const fallbackReadme = await fetchRawReadme(repo);
+      return fallbackReadme.content ? fallbackReadme : { content: null, error: "README not found for this repository." };
     }
 
     if (!response.ok) {
-      return { content: null, error: getGitHubErrorMessage(response.status, "README") };
+      const fallbackReadme = await fetchRawReadme(repo);
+      return fallbackReadme.content ? fallbackReadme : { content: null, error: getGitHubErrorMessage(response.status, "README") };
     }
 
     const data = (await response.json()) as GitHubReadmeResponse;
@@ -123,10 +133,82 @@ async function fetchReadme(repo: string): Promise<{ content: string | null; erro
   }
 }
 
+async function fetchRawReadme(repo: string): Promise<{ content: string | null; error: string | null }> {
+  const [owner, repoName] = repo.split("/");
+
+  if (!owner || !repoName) {
+    return { content: null, error: "Invalid repository name." };
+  }
+
+  const candidates = ["main", "master"].flatMap((branch) => [
+    `https://raw.githubusercontent.com/${owner}/${repoName}/${branch}/README.md`,
+    `https://raw.githubusercontent.com/${owner}/${repoName}/${branch}/readme.md`,
+  ]);
+
+  for (const url of candidates) {
+    try {
+      const response = await fetch(url);
+
+      if (response.ok) {
+        return { content: await response.text(), error: null };
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return { content: null, error: "README not found for this repository." };
+}
+
 function decodeBase64(content: string) {
   const binary = window.atob(content.replace(/\n/g, ""));
   const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
   return new TextDecoder("utf-8").decode(bytes);
+}
+
+function getProjectFallbackFromReadme(repo: string, readme: string | null) {
+  const repoName = repo.split("/").at(-1) ?? repo;
+
+  return {
+    name: getReadmeTitle(readme) ?? repoName,
+    description: getReadmeExcerpt(readme),
+  };
+}
+
+function getReadmeTitle(readme: string | null) {
+  if (!readme) {
+    return null;
+  }
+
+  const heading = readme
+    .split("\n")
+    .map((line) => line.trim())
+    .find((line) => /^#\s+/.test(line));
+
+  return heading?.replace(/^#\s+/, "").trim() || null;
+}
+
+function getReadmeExcerpt(readme: string | null) {
+  if (!readme) {
+    return null;
+  }
+
+  const paragraph = readme
+    .split(/\n{2,}/)
+    .map((block) => block.replace(/\n/g, " ").trim())
+    .find((block) => block && !block.startsWith("#") && !block.startsWith("!") && !block.startsWith("[!"));
+
+  if (!paragraph) {
+    return null;
+  }
+
+  const cleanParagraph = paragraph
+    .replace(/!\[[^\]]*]\([^)]+\)/g, "")
+    .replace(/\[([^\]]+)]\([^)]+\)/g, "$1")
+    .replace(/[`*_>]/g, "")
+    .trim();
+
+  return cleanParagraph.length > 220 ? `${cleanParagraph.slice(0, 217).trim()}...` : cleanParagraph;
 }
 
 function getGitHubErrorMessage(status: number, resource: string) {
