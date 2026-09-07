@@ -462,7 +462,12 @@ main {
 
 .skills-layout {
   display: grid;
-  grid-template-columns: minmax(260px, .72fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.education-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, .42fr);
   gap: 20px;
 }
 
@@ -476,10 +481,8 @@ main {
 }
 
 .education-card {
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  min-height: 300px;
+  display: grid;
   padding: clamp(22px, 4vw, 34px);
   position: relative;
   overflow: hidden;
@@ -488,54 +491,111 @@ main {
 .education-card::before {
   content: "";
   position: absolute;
-  right: -58px;
-  top: -58px;
-  width: 190px;
-  height: 190px;
+  right: -72px;
+  top: -72px;
+  width: 220px;
+  height: 220px;
   border: 1px solid rgba(247, 247, 242, .14);
   border-radius: 999px;
 }
 
-.ufms-mark {
+.education-card-main {
+  grid-template-columns: minmax(230px, .45fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 56px);
+  align-items: center;
+}
+
+.education-logo-panel {
+  position: relative;
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(47, 109, 255, .22), transparent 58%),
+    #080808;
+}
+
+.education-logo-panel::before {
+  content: "";
   position: absolute;
-  right: clamp(16px, 3vw, 34px);
-  top: 24px;
-  width: min(42%, 190px);
-  max-height: 240px;
+  inset: 14px;
+  border: 1px solid rgba(247, 247, 242, .1);
+}
+
+.ufms-mark {
+  position: relative;
+  z-index: 1;
+  width: min(58%, 170px);
+  max-height: 210px;
   object-fit: contain;
-  opacity: .14;
-  pointer-events: none;
+  filter: drop-shadow(0 18px 34px rgba(47, 109, 255, .2));
 }
 
 .education-card h3 {
   position: relative;
-  margin: 28px 0 10px;
-  font-size: clamp(54px, 8vw, 96px);
+  margin: 20px 0 10px;
+  font-size: clamp(44px, 6vw, 76px);
   font-weight: 500;
-  line-height: .82;
+  line-height: .9;
 }
 
 .education-card p:not(.project-kind) {
   position: relative;
-  max-width: 310px;
+  max-width: 420px;
   margin: 0;
   color: var(--muted);
   line-height: 1.55;
 }
 
-.education-card strong {
+.education-meta {
   position: relative;
+  display: grid;
+  gap: 10px;
   margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
   color: var(--ink);
+}
+
+.education-meta span {
+  display: block;
+  color: rgba(247, 247, 242, .88);
+  font-size: clamp(16px, 1.8vw, 20px);
+}
+
+.education-meta span:last-child {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
 
+.postgraduate-card {
+  align-content: end;
+}
+
+.postgraduate-card h3 {
+  color: rgba(247, 247, 242, .64);
+  font-size: clamp(34px, 4vw, 54px);
+}
+
 .certification-panel {
   padding: clamp(20px, 3vw, 30px);
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.panel-title-row span {
+  width: min(20vw, 180px);
+  height: 1px;
+  background: rgba(247, 247, 242, .42);
 }
 
 .certification-list {
@@ -702,6 +762,9 @@ main {
 .github-actions a,
 .github-actions button,
 .project-modal-header button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 42px;
   padding: 0 14px;
   border: 1px solid var(--line);
@@ -994,7 +1057,9 @@ main {
 
 .pex-content {
   display: grid;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: clamp(24px, 4vw, 54px);
+  align-items: start;
 }
 
 .pex-content .project-kind {
@@ -1040,6 +1105,26 @@ main {
   width: 6px;
   height: 1px;
   background: var(--accent-dark);
+}
+
+.pex-tags {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.pex-tags span {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  color: rgba(247, 247, 242, .72);
+  background: rgba(255, 255, 255, .035);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
 .experience-projects {
@@ -1302,13 +1387,16 @@ main {
   .hero-section,
   .section-heading,
   .skills-layout,
+  .education-grid,
+  .education-card-main,
   .skill-highlight-grid,
   .github-project-grid,
   .contact-grid,
   .career-layout,
   .career-entry,
   .experience-projects,
-  .experience-project {
+  .experience-project,
+  .pex-content {
     grid-template-columns: 1fr;
   }
 

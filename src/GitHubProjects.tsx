@@ -10,12 +10,11 @@ type GitHubProjectsProps = {
 const labels = {
   pt: {
     eyebrow: "Projetos",
-    title: "Repositórios selecionados.",
+    title: "Meus repositórios",
     description:
       "Projetos escolhidos manualmente e carregados pela API pública do GitHub, com detalhes do repositório e README renderizado dentro do portfólio.",
     loading: "Carregando repositórios",
     updated: "Atualizado em",
-    stars: "Estrelas",
     readmeUnavailable: "README indisponível para este projeto.",
     empty: "Nenhum repositório configurado para destaque.",
     viewProject: "Ver projeto",
@@ -30,7 +29,6 @@ const labels = {
       "Manually selected projects loaded from the public GitHub API, with repository details and README rendered inside the portfolio.",
     loading: "Loading repositories",
     updated: "Updated on",
-    stars: "Stars",
     readmeUnavailable: "README unavailable for this project.",
     empty: "No repositories configured for display.",
     viewProject: "View project",
@@ -105,9 +103,6 @@ export function GitHubProjects({ language }: GitHubProjectsProps) {
 
               <div className="github-meta">
                 <span>{project.repo}</span>
-                <span>
-                  {project.stars} {content.stars}
-                </span>
               </div>
 
               {project.topics.length > 0 && (

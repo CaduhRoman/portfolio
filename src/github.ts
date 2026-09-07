@@ -8,7 +8,6 @@ export type GitHubProject = {
   url: string;
   homepage: string | null;
   language: string | null;
-  stars: number;
   topics: string[];
   updatedAt: string;
   readme: string | null;
@@ -22,9 +21,9 @@ type GitHubRepoResponse = {
   html_url: string;
   homepage: string | null;
   language: string | null;
-  stargazers_count: number;
   topics?: string[];
   updated_at: string;
+  pushed_at: string;
 };
 
 type GitHubReadmeResponse = {
@@ -59,7 +58,6 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
     url: `https://github.com/${repo}`,
     homepage: null,
     language: null,
-    stars: 0,
     topics: [],
     updatedAt: "",
     readme: null,
@@ -86,9 +84,8 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
       url: repoData.html_url,
       homepage: repoData.homepage || null,
       language: repoData.language,
-      stars: repoData.stargazers_count,
       topics: repoData.topics ?? [],
-      updatedAt: repoData.updated_at,
+      updatedAt: repoData.pushed_at || repoData.updated_at,
       readme: readme.content,
       error: readme.error,
     };

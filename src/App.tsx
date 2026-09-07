@@ -4,7 +4,7 @@ import dataModelingImage from "../assets/datamodeling.png";
 import maringaLogo from "../assets/maringalogo.avif";
 import spriteImage from "../assets/mysprite.gif";
 import { GitHubProjects } from "./GitHubProjects";
-import ufmsMark from "./assets/ufms-mark.svg";
+import ufmsMark from "./assets/ufms-blue-mark.svg";
 
 type Language = "pt" | "en";
 
@@ -33,8 +33,12 @@ const copy = {
       description:
         "Um resumo da minha formação, certificações e competências que sustentam meu trabalho com dados, processos e desenvolvimento aplicado.",
       educationLabel: "Formação",
+      postgraduateLabel: "Pós-graduação",
+      postgraduateStatus: "Loading...",
+      postgraduateDescription: "Próximo passo acadêmico em definição.",
       university: "Universidade Federal do Mato Grosso do Sul",
-      degree: "Tecnologia da Informação | 2026 - 2028",
+      degreeName: "Tecnologia da Informação",
+      degreePeriod: "2026 - 2028",
       certificationsLabel: "Certificações & Reconhecimentos",
       credential: "Ver credencial",
       highlights: [
@@ -59,7 +63,7 @@ const copy = {
       company: "Grupo Maringá",
       description:
         "Atuação em análise de dados, desenvolvimento de dashboards e leitura de processos para apoiar decisões e rotinas internas. Destaque para a participação como principal executante no PEx - Projeto de Excelência de implementação do ERP SIGIND na Sinterização, conectando sistemas, indicadores e pessoas.",
-      pexLabel: "PEx Programa de Excelência",
+      pexLabel: "PEx Projeto de Excelência",
       pexTitle: "Implementação de ERP SIGIND na Sinterização",
       pexDetails: [
         "Atuei como principal executante das ações do projeto, conectando processo, ERP e desenvolvimento.",
@@ -114,8 +118,12 @@ const copy = {
       description:
         "A summary of the education, certifications and practical skills that support my work with data, processes and applied development.",
       educationLabel: "Education",
+      postgraduateLabel: "Postgraduate",
+      postgraduateStatus: "Loading...",
+      postgraduateDescription: "Next academic step in progress.",
       university: "Federal University of Mato Grosso do Sul",
-      degree: "Information Technology | 2026 - 2028",
+      degreeName: "Information Technology",
+      degreePeriod: "2026 - 2028",
       certificationsLabel: "Certifications & Recognition",
       credential: "View credential",
       highlights: [
@@ -220,6 +228,8 @@ const skills = [
   "System analytics",
 ];
 
+const pexTags = ["PASCAL", "SQL", "DATA STRUCTURING", "ERP"];
+
 function Header({ content }: { content: (typeof copy)[Language] }) {
   return (
     <header className="site-header">
@@ -316,16 +326,36 @@ function Skills({ content }: { content: (typeof copy)[Language] }) {
       </div>
 
       <div className="skills-layout">
-        <article className="education-card" data-reveal>
-          <img className="ufms-mark" src={ufmsMark} alt="" />
-          <p className="project-kind">{content.skills.educationLabel}</p>
-          <h3>UFMS</h3>
-          <p>{content.skills.university}</p>
-          <strong>{content.skills.degree}</strong>
-        </article>
+        <div className="education-grid">
+          <article className="education-card education-card-main" data-reveal>
+            <div className="education-logo-panel" aria-hidden="true">
+              <img className="ufms-mark" src={ufmsMark} alt="" />
+            </div>
+
+            <div className="education-info">
+              <p className="project-kind">{content.skills.educationLabel}</p>
+              <h3>UFMS</h3>
+              <p>{content.skills.university}</p>
+
+              <div className="education-meta">
+                <span>{content.skills.degreeName}</span>
+                <span>{content.skills.degreePeriod}</span>
+              </div>
+            </div>
+          </article>
+
+          <article className="education-card postgraduate-card" data-reveal>
+            <p className="project-kind">{content.skills.postgraduateLabel}</p>
+            <h3>{content.skills.postgraduateStatus}</h3>
+            <p>{content.skills.postgraduateDescription}</p>
+          </article>
+        </div>
 
         <div className="certification-panel" data-reveal>
-          <p className="project-kind">{content.skills.certificationsLabel}</p>
+          <div className="panel-title-row">
+            <p className="project-kind">{content.skills.certificationsLabel}</p>
+            <span aria-hidden="true" />
+          </div>
           <div className="certification-list">
             {certifications.map((certification, index) => (
               <a
@@ -390,13 +420,21 @@ function Career({ content }: { content: (typeof copy)[Language] }) {
       <div className="pex-track" data-reveal aria-label={content.career.pexLabel}>
         <div className="pex-marker" aria-hidden="true" />
         <div className="pex-content">
-          <p className="project-kind">{content.career.pexLabel}</p>
-          <h3>{content.career.pexTitle}</h3>
-          <ul>
-            {content.career.pexDetails.map((detail) => (
-              <li key={detail}>{detail}</li>
+          <div>
+            <p className="project-kind">{content.career.pexLabel}</p>
+            <h3>{content.career.pexTitle}</h3>
+            <ul>
+              {content.career.pexDetails.map((detail) => (
+                <li key={detail}>{detail}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="pex-tags" aria-label="Tecnologias usadas no PEx">
+            {pexTags.map((tag) => (
+              <span key={tag}>{tag}</span>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
 
