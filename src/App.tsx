@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import dashCeeImage from "../assets/dashcee.png";
 import dataModelingImage from "../assets/datamodeling.png";
-import portraitImage from "../assets/eu.png";
 import maringaLogo from "../assets/maringalogo.avif";
+import spriteImage from "../assets/mysprite.gif";
+import { GitHubProjects } from "./GitHubProjects";
 import ufmsMark from "./assets/ufms-mark.svg";
 
 type Language = "pt" | "en";
@@ -16,15 +17,15 @@ type Project = {
 
 const copy = {
   pt: {
-    nav: { skills: "Skills", career: "Carreira", contact: "Contato" },
+    nav: { skills: "Skills", projects: "Projetos", career: "Carreira", contact: "Contato" },
     hero: {
       eyebrow: "Data Analyst · System Analytics · Development",
       title: "Eu construo, analiso e aprendo com dados.",
       paragraphs: [
-        "Sou Carlos Romanow, um profissional de dados em construção constante. Meu interesse está em entender sistemas, estruturar bases e transformar regras de negócio em modelos analíticos confiáveis.",
+        "Sou o Cadu, um profissional de dados em construção constante. Meu interesse está em entender sistemas, estruturar bases e transformar regras de negócio em modelos analíticos confiáveis.",
         "Trabalho entre analytics engineering, estatística aplicada e desenvolvimento. Gosto de rotinas de alta produtividade relacionadas a dados, desenvolvimento e sistemas.",
       ],
-      pillars: ["01 / Análise", "02 / Modelagem", "03 / Desenvolvimento", "04 / Visualização"],
+      pillars: ["Análise", "Modelagem", "Engenharia", "Visualização"],
     },
     skills: {
       eyebrow: "Skills",
@@ -58,7 +59,7 @@ const copy = {
       company: "Grupo Maringá",
       description:
         "Atuação em análise de dados, desenvolvimento de dashboards e leitura de processos para apoiar decisões e rotinas internas. Destaque para a participação como principal executante no PEx - Projeto de Excelência de implementação do ERP SIGIND na Sinterização, conectando sistemas, indicadores e pessoas.",
-      pexLabel: "PEx Programa de Excelência - Principal Executante",
+      pexLabel: "PEx Programa de Excelência",
       pexTitle: "Implementação de ERP SIGIND na Sinterização",
       pexDetails: [
         "Atuei como principal executante das ações do projeto, conectando processo, ERP e desenvolvimento.",
@@ -97,7 +98,7 @@ const copy = {
     footer: "Data Analyst · System Analytics · Development",
   },
   en: {
-    nav: { skills: "Skills", career: "Career", contact: "Contact" },
+    nav: { skills: "Skills", projects: "Projects", career: "Career", contact: "Contact" },
     hero: {
       eyebrow: "Data Analyst · System Analytics · Development",
       title: "I build, analyze, and learn from data.",
@@ -105,7 +106,7 @@ const copy = {
         "I am Carlos Romanow, a data professional in constant development. My interest is in understanding systems, structuring data foundations and translating business rules into reliable analytical models.",
         "I work across analytics engineering, applied statistics and development. I enjoy high-productivity routines related to data, systems and practical analytical solutions.",
       ],
-      pillars: ["01 / Analysis", "02 / Modeling", "03 / Development", "04 / Visualization"],
+      pillars: ["Analysis", "Modeling", "Engineering", "Visualization"],
     },
     skills: {
       eyebrow: "Skills",
@@ -224,12 +225,12 @@ function Header({ content }: { content: (typeof copy)[Language] }) {
     <header className="site-header">
       <div className="header-inner">
         <a className="brand" href="#inicio" aria-label="Carlos Romanow">
-          <span className="brand-mark">CR</span>
-          <span>Carlos Romanow</span>
+          <span className="brand-name">caduhroman</span>
         </a>
 
         <nav className="nav-links" aria-label="Main navigation">
           <a href="#skills">{content.nav.skills}</a>
+          <a href="#projetos">{content.nav.projects}</a>
           <a href="#carreira">{content.nav.career}</a>
           <a href="#contato">{content.nav.contact}</a>
         </nav>
@@ -266,8 +267,8 @@ function Hero({
     <section className="hero-section" id="inicio" aria-labelledby="hero-title">
       <div className="portrait-panel" data-reveal>
         <LanguageSwitch language={language} onChange={onLanguageChange} />
-        <div className="portrait-shell">
-          <img src={portraitImage} alt="Carlos Romanow" />
+        <div className="portrait-shell sprite-shell">
+          <img src={spriteImage} alt="Sprite 360 de Carlos Romanow" />
         </div>
       </div>
 
@@ -281,8 +282,10 @@ function Hero({
         </div>
 
         <div className="signature-grid" aria-label="Professional focus areas">
-          {content.hero.pillars.map((pillar) => (
-            <span key={pillar}>{pillar}</span>
+          {content.hero.pillars.map((pillar, index) => (
+            <span className={index === 2 ? "active" : ""} key={pillar}>
+              {pillar}
+            </span>
           ))}
         </div>
       </div>
@@ -380,6 +383,10 @@ function Career({ content }: { content: (typeof copy)[Language] }) {
         </div>
       </div>
 
+      <div className="contributions-heading" data-reveal>
+        <p className="project-kind">Participações e contribuições</p>
+      </div>
+
       <div className="pex-track" data-reveal aria-label={content.career.pexLabel}>
         <div className="pex-marker" aria-hidden="true" />
         <div className="pex-content">
@@ -464,7 +471,7 @@ function Footer({ content }: { content: (typeof copy)[Language] }) {
         <span>CR</span>
       </div>
       <div>
-        <strong>Carlos Romanow</strong>
+        <strong className="footer-name">caduhroman</strong>
         <p>{content.footer}</p>
       </div>
       <span className="footer-year">2026</span>
@@ -534,6 +541,7 @@ export default function App() {
       <main>
         <Hero content={content} language={language} onLanguageChange={setLanguage} />
         <Skills content={content} />
+        <GitHubProjects language={language} />
         <Career content={content} />
         <Contact content={content} />
       </main>
