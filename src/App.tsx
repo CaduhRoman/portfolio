@@ -607,10 +607,13 @@ export default function App() {
   const content = copy[language];
 
   useEffect(() => {
-    const revealItems = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const visibleClass = "is-visible";
+    const revealSelector = "[data-reveal]";
+    const revealItems = () => document.querySelectorAll<HTMLElement>(revealSelector);
+    const revealAll = () => revealItems().forEach((item) => item.classList.add(visibleClass));
 
     if (!("IntersectionObserver" in window)) {
-      revealItems.forEach((item) => item.classList.add("is-visible"));
+      revealAll();
       return;
     }
 
@@ -618,17 +621,34 @@ export default function App() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
+            entry.target.classList.add(visibleClass);
             observer.unobserve(entry.target);
           }
         });
       },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
+      { rootMargin: "0px 0px -18% 0px", threshold: 0.04 },
     );
 
-    revealItems.forEach((item) => observer.observe(item));
+    const observeHiddenItems = () => {
+      revealItems().forEach((item) => {
+        if (!item.classList.contains(visibleClass)) {
+          observer.observe(item);
+        }
+      });
+    };
 
-    return () => observer.disconnect();
+    observeHiddenItems();
+
+    const mutationObserver = new MutationObserver(observeHiddenItems);
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    const fallback = window.setTimeout(revealAll, 2200);
+
+    return () => {
+      window.clearTimeout(fallback);
+      mutationObserver.disconnect();
+      observer.disconnect();
+    };
   }, []);
 
   return (
