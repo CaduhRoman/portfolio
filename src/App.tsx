@@ -530,12 +530,12 @@ function Contact({ content }: { content: (typeof copy)[Language] }) {
           </div>
 
           <div className="contact-links">
-            <a href="mailto:caduromanow@gmail.com">
+            <a href="mailto:caduromanow@hotmail.com">
               <span>
                 <IconMail />
                 {content.contact.email}
               </span>
-              <strong>caduromanow@gmail.com</strong>
+              <strong>caduromanow@hotmail.com</strong>
             </a>
             <a href="https://github.com/caduhroman" target="_blank" rel="noopener noreferrer">
               <span>
