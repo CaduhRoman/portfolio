@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { GitHubProject, loadFeaturedProjects } from "./github";
@@ -12,7 +12,7 @@ const labels = {
     eyebrow: "Projetos",
     title: "Meus trabalhos",
     description:
-      "Projetos escolhidos manualmente e carregados pela API pública do GitHub, com detalhes do repositório e README renderizado dentro do portfólio.",
+      "Uma seleção dos meus trabalhos com análise de dados e desenvolvimento de sistemas.",
     loading: "Carregando repositórios",
     updated: "Atualizado em",
     readmeUnavailable: "README indisponível para este projeto.",
@@ -24,9 +24,9 @@ const labels = {
   },
   en: {
     eyebrow: "Projects",
-    title: "My works.",
+    title: "Selected work.",
     description:
-      "Manually selected projects loaded from the public GitHub API, with repository details and README rendered inside the portfolio.",
+      "Selected projects in data analysis and systems development.",
     loading: "Loading repositories",
     updated: "Updated on",
     readmeUnavailable: "README unavailable for this project.",
@@ -42,6 +42,7 @@ export function GitHubProjects({ language }: GitHubProjectsProps) {
   const [projects, setProjects] = useState<GitHubProject[]>([]);
   const [selectedProject, setSelectedProject] = useState<GitHubProject | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
   const content = labels[language];
 
@@ -63,7 +64,7 @@ export function GitHubProjects({ language }: GitHubProjectsProps) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [attempt]);
 
   useEffect(() => {
     document.body.classList.toggle("modal-open", Boolean(selectedProject));
@@ -99,7 +100,8 @@ export function GitHubProjects({ language }: GitHubProjectsProps) {
               </div>
 
               <h3>{project.name}</h3>
-              <p>{project.description ?? project.error ?? "No repository description available."}</p>
+              <p>{project.description ?? (language === "pt" ? "Consulte os detalhes deste projeto." : "Explore this project's details.")}</p>
+              {project.error && <button type="button" onClick={() => setAttempt((value) => value + 1)}>{language === "pt" ? "Tentar carregar novamente" : "Retry loading"}</button>}
 
               <div className="github-meta">
                 <span>{project.repo}</span>
@@ -153,17 +155,43 @@ function ProjectModal({
   language: "pt" | "en";
   onClose: () => void;
 }) {
+  const panel = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    panel.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+      if (event.key !== "Tab") return;
+      const items = Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href], button, [tabindex="0"]') ?? []);
+      const first = items[0];
+      const last = items.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => { document.removeEventListener("keydown", handleKey); previous?.focus(); };
+  }, [onClose]);
+
+  const resolveUrl = (url: string | undefined, image: boolean) => {
+    if (!url || url.startsWith("#") || /^[a-z][a-z\d+.-]*:/i.test(url)) return url;
+    const resolved = new URL(url, project.readmeUrl ?? `https://raw.githubusercontent.com/${project.repo}/HEAD/README.md`);
+    if (!image && resolved.hostname === "raw.githubusercontent.com") {
+      const [, owner, repo, ...path] = resolved.pathname.split("/");
+      return `https://github.com/${owner}/${repo}/blob/${path.join("/")}${resolved.search}${resolved.hash}`;
+    }
+    return resolved.href;
+  };
   return (
     <div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
-      <button className="modal-backdrop" type="button" aria-label={content.close} onClick={onClose} />
-      <article className="project-modal-panel">
+      <button className="modal-backdrop" tabIndex={-1} type="button" aria-label={content.close} onClick={onClose} />
+      <article className="project-modal-panel" ref={panel}>
         <header className="project-modal-header">
           <div>
             <p className="project-kind">{project.language ?? project.repo}</p>
             <h2 id="project-modal-title">{project.name}</h2>
-            <span>
+            {project.updatedAt && <span>
               {content.updated} {formatDate(project.updatedAt, language)}
-            </span>
+            </span>}
           </div>
           <button type="button" onClick={onClose}>
             {content.close}
@@ -172,7 +200,10 @@ function ProjectModal({
 
         <div className="readme-surface">
           {project.readme ? (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{project.readme}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+              img: ({ src, alt }) => <img src={resolveUrl(src, true)} alt={alt ?? ""} loading="lazy" />,
+              a: ({ href, children }) => <a href={resolveUrl(href, false)} target={href?.startsWith("#") ? undefined : "_blank"} rel="noopener noreferrer">{children}</a>,
+            }}>{project.readme}</ReactMarkdown>
           ) : (
             <p className="github-error">{project.error ?? content.readmeUnavailable}</p>
           )}

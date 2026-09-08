@@ -3,6 +3,7 @@ import dashCeeImage from "../assets/dashcee.png";
 import dataModelingImage from "../assets/datamodeling.png";
 import maringaLogo from "../assets/maringalogo-cropped.png";
 import spriteImage from "../assets/mysprite.gif";
+import favicon from "../assets/favicon.png";
 import { GitHubProjects } from "./GitHubProjects";
 import ufmsMark from "./assets/ufms-blue-mark.svg";
 
@@ -92,7 +93,7 @@ const copy = {
     },
     contact: {
       eyebrow: "Contato",
-      title: "Oportunidades e/ou requests.",
+      title: "Vamos conversar.",
       status: "Disponível",
       available:
         "Aberto para oportunidades em Analytics Engineering, Data Analytics, System Analytics e Desenvolvimento.",
@@ -118,7 +119,7 @@ const copy = {
       title: "Education.",
       description:
         "A summary of the education, certifications and practical skills that support my work with data, processes and applied development.",
-      educationLabel: "Superior",
+      educationLabel: "Undergraduate",
       postgraduateLabel: "Postgraduate",
       postgraduateStatus: "Loading...",
       postgraduateDescription: "Next academic step in progress.",
@@ -171,14 +172,14 @@ const copy = {
           title: "CEE Dashboard",
           kind: "Business intelligence",
           summary:
-            "Visual experiment to consolidate data into a clean, navigable and monitoring-oriented dashboard.",
+            "Operational dashboard using applied process statistics, with daily energy consumption, production and quality indicators.",
           image: dashCeeImage,
         },
       ],
     },
     contact: {
       eyebrow: "Contact",
-      title: "Let's build a conversation from data.",
+      title: "Let's talk.",
       status: "Available",
       available:
         "Open to opportunities in Analytics Engineering, Data Analytics, System Analytics and Development.",
@@ -241,9 +242,9 @@ function Header({ content }: { content: (typeof copy)[Language] }) {
         </a>
 
         <nav className="nav-links" aria-label="Main navigation">
+          <a href="#carreira">{content.nav.career}</a>
           <a href="#skills">{content.nav.skills}</a>
           <a href="#projetos">{content.nav.projects}</a>
-          <a href="#carreira">{content.nav.career}</a>
           <a href="#contato">{content.nav.contact}</a>
         </nav>
       </div>
@@ -420,7 +421,7 @@ function Career({ content, language }: { content: (typeof copy)[Language]; langu
 
       <div className="career-contributions" data-reveal>
         <div className="contributions-heading">
-          <p className="project-kind">Participações e contribuições</p>
+          <p className="project-kind">{language === "pt" ? "Participações e contribuições" : "Participation and contributions"}</p>
           <span>{content.career.company}</span>
         </div>
 
@@ -463,7 +464,8 @@ function Career({ content, language }: { content: (typeof copy)[Language]; langu
 }
 
 function calculateTenure(startDate: string, language: Language) {
-  const start = new Date(startDate);
+  const [year, month, day] = startDate.split("-").map(Number);
+  const start = new Date(year, month - 1, day);
   const today = new Date();
 
   let months = (today.getFullYear() - start.getFullYear()) * 12 + today.getMonth() - start.getMonth();
@@ -528,12 +530,12 @@ function Contact({ content }: { content: (typeof copy)[Language] }) {
           </div>
 
           <div className="contact-links">
-            <a href="mailto:caduromanow">
+            <a href="mailto:caduromanow@gmail.com">
               <span>
                 <IconMail />
                 {content.contact.email}
               </span>
-              <strong>caduromanow</strong>
+              <strong>caduromanow@gmail.com</strong>
             </a>
             <a href="https://github.com/caduhroman" target="_blank" rel="noopener noreferrer">
               <span>
@@ -562,15 +564,13 @@ function Contact({ content }: { content: (typeof copy)[Language] }) {
 
 function Footer({ content }: { content: (typeof copy)[Language] }) {
   return (
-    <footer className="site-footer" data-reveal>
-      <div className="footer-mark">
-        <span>CR</span>
-      </div>
+    <footer className="site-footer">
+      <img className="footer-favicon" src={favicon} alt="" width="48" height="48" />
       <div>
         <strong className="footer-name">caduhroman</strong>
         <p>{content.footer}</p>
       </div>
-      <span className="footer-year">2026</span>
+      <span className="footer-year">{new Date().getFullYear()}</span>
     </footer>
   );
 }
@@ -607,6 +607,10 @@ export default function App() {
   const content = copy[language];
 
   useEffect(() => {
+    document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+  }, [language]);
+
+  useEffect(() => {
     const visibleClass = "is-visible";
     const revealSelector = "[data-reveal]";
     const revealItems = () => document.querySelectorAll<HTMLElement>(revealSelector);
@@ -626,7 +630,7 @@ export default function App() {
           }
         });
       },
-      { rootMargin: "0px 0px -18% 0px", threshold: 0.04 },
+      { rootMargin: "0px 0px 40px 0px", threshold: 0 },
     );
 
     const observeHiddenItems = () => {
@@ -642,10 +646,7 @@ export default function App() {
     const mutationObserver = new MutationObserver(observeHiddenItems);
     mutationObserver.observe(document.body, { childList: true, subtree: true });
 
-    const fallback = window.setTimeout(revealAll, 2200);
-
     return () => {
-      window.clearTimeout(fallback);
       mutationObserver.disconnect();
       observer.disconnect();
     };
@@ -656,9 +657,9 @@ export default function App() {
       <Header content={content} />
       <main>
         <Hero content={content} language={language} onLanguageChange={setLanguage} />
+        <Career content={content} language={language} />
         <Skills content={content} />
         <GitHubProjects language={language} />
-        <Career content={content} language={language} />
         <Contact content={content} />
       </main>
       <Footer content={content} />

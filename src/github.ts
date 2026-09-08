@@ -11,6 +11,7 @@ export type GitHubProject = {
   topics: string[];
   updatedAt: string;
   readme: string | null;
+  readmeUrl?: string;
   error: string | null;
 };
 
@@ -29,9 +30,12 @@ type GitHubRepoResponse = {
 type GitHubReadmeResponse = {
   content: string;
   encoding: string;
+  download_url: string;
 };
 
 const projectCache = new Map<string, Promise<GitHubProject>>();
+const cacheTime = new Map<string, number>();
+const cacheDuration = 15 * 60 * 1000;
 
 export function loadFeaturedProjects() {
   return Promise.all(featuredRepositories.map((item) => loadGitHubProject(item.repo, item.featured)));
@@ -40,12 +44,27 @@ export function loadFeaturedProjects() {
 function loadGitHubProject(repo: string, featured: boolean) {
   const cached = projectCache.get(repo);
 
-  if (cached) {
+  if (cached && Date.now() - (cacheTime.get(repo) ?? 0) < cacheDuration) {
     return cached;
   }
 
-  const request = fetchGitHubProject(repo, featured);
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(`project-v1:${repo}`) ?? "null");
+    if (stored && Date.now() - stored.time < cacheDuration && stored.project?.repo === repo) {
+      return Promise.resolve({ ...stored.project, featured } as GitHubProject);
+    }
+  } catch { /* Storage may be unavailable. */ }
+
+  const request = fetchGitHubProject(repo, featured).then((project) => {
+    if (project.error) projectCache.delete(repo);
+    else {
+      try { sessionStorage.setItem(`project-v1:${repo}`, JSON.stringify({ time: Date.now(), project })); }
+      catch { /* In-memory caching remains available. */ }
+    }
+    return project;
+  });
   projectCache.set(repo, request);
+  cacheTime.set(repo, Date.now());
   return request;
 }
 
@@ -77,6 +96,7 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
         ...emptyProject,
         ...fallback,
         readme: readme.content,
+        readmeUrl: readme.url,
         error: readme.content ? null : getGitHubErrorMessage(repoResponse.status, "repository"),
       };
     }
@@ -95,6 +115,7 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
       topics: repoData.topics ?? [],
       updatedAt: repoData.pushed_at || repoData.updated_at,
       readme: readme.content,
+      readmeUrl: readme.url,
       error: readme.error,
     };
   } catch {
@@ -105,7 +126,7 @@ async function fetchGitHubProject(repo: string, featured: boolean): Promise<GitH
   }
 }
 
-async function fetchReadme(repo: string): Promise<{ content: string | null; error: string | null }> {
+async function fetchReadme(repo: string): Promise<{ content: string | null; error: string | null; url?: string }> {
   try {
     const response = await fetch(`https://api.github.com/repos/${repo}/readme`, {
       headers: { Accept: "application/vnd.github+json" },
@@ -127,13 +148,13 @@ async function fetchReadme(repo: string): Promise<{ content: string | null; erro
       return { content: null, error: "Unsupported README encoding returned by GitHub." };
     }
 
-    return { content: decodeBase64(data.content), error: null };
+    return { content: decodeBase64(data.content), error: null, url: data.download_url };
   } catch {
     return { content: null, error: "Network failure while loading the README." };
   }
 }
 
-async function fetchRawReadme(repo: string): Promise<{ content: string | null; error: string | null }> {
+async function fetchRawReadme(repo: string): Promise<{ content: string | null; error: string | null; url?: string }> {
   const [owner, repoName] = repo.split("/");
 
   if (!owner || !repoName) {
@@ -150,7 +171,7 @@ async function fetchRawReadme(repo: string): Promise<{ content: string | null; e
       const response = await fetch(url);
 
       if (response.ok) {
-        return { content: await response.text(), error: null };
+        return { content: await response.text(), error: null, url };
       }
     } catch {
       continue;
