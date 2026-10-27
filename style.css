@@ -1245,6 +1245,79 @@ a.proj-link:hover {
   cursor: pointer;
 }
 
+/* Durante o voo, passa por cima do painel e do balão. */
+.assistant-launcher--entering {
+  position: relative;
+  z-index: 1;
+}
+
+.assistant-intro {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: min(260px, calc(100vw - 32px));
+  margin-right: 12px;
+  padding: 10px 8px 10px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform-origin: bottom right;
+  animation: assistant-pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+/* Rabinho do balão apontando para a Romi. */
+.assistant-intro::after {
+  content: "";
+  position: absolute;
+  right: 36px;
+  bottom: -9px;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: var(--surface);
+  transform: rotate(45deg);
+}
+
+@keyframes assistant-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+  }
+}
+
+.assistant-intro-text {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+
+.assistant-intro-close {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.assistant-intro-close:hover {
+  color: var(--ink);
+}
+
 .assistant-launcher:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: -8px;
@@ -1451,6 +1524,7 @@ a.proj-link:hover {
 
 @media (prefers-reduced-motion: reduce) {
   .assistant-panel,
+  .assistant-intro,
   .bubble--typing {
     animation: none;
   }
