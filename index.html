@@ -29,21 +29,7 @@
     <title>Carlos Romanow · Software & AI Engineer</title>
 
     <!-- Aplica tema e idioma salvos antes da primeira pintura, para não piscar. -->
-    <script>
-      (function () {
-        var root = document.documentElement;
-        try {
-          var theme = localStorage.getItem("theme");
-          if (theme !== "light" && theme !== "dark") {
-            theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-          }
-          root.dataset.theme = theme;
-          if (localStorage.getItem("lang") === "pt") root.lang = "pt-BR";
-        } catch (e) {
-          root.dataset.theme = "light";
-        }
-      })();
-    </script>
+    <script src="/theme.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

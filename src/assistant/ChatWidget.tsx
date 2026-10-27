@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useI18n } from "../i18n";
 import Mascot, { type MascotMood } from "./Mascot";
+import { createTurnstile, SITE_KEY } from "./turnstile";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -40,7 +41,7 @@ function flyIn(el: HTMLElement) {
 
 
 export function ChatWidget() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const copy = t.assistant;
 
   const [open, setOpen] = useState(false);
@@ -59,6 +60,19 @@ export function ChatWidget() {
 
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const captchaRef = useRef<HTMLDivElement>(null);
+  const turnstile = useRef<ReturnType<typeof createTurnstile> | null>(null);
+
+  // O Turnstile só existe com o painel aberto; o token da primeira pergunta já vai sendo gerado.
+  useEffect(() => {
+    if (!open || !SITE_KEY || !captchaRef.current) return;
+    const ts = createTurnstile(captchaRef.current, lang);
+    turnstile.current = ts;
+    return () => {
+      ts.destroy();
+      turnstile.current = null;
+    };
+  }, [open, lang]);
 
   // Primeira visita da sessão: entrada animada e balão de apresentação.
   useEffect(() => {
@@ -113,15 +127,31 @@ export function ChatWidget() {
     setLoading(true);
     setMood("thinking");
 
+    let token: string | undefined;
+    try {
+      token = turnstile.current ? await turnstile.current.take() : undefined;
+    } catch {
+      setError(copy.errors.verification);
+      setMood("idle");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next, token }),
       });
       const data = (await res.json().catch(() => ({}))) as { reply?: string; error?: string };
       if (!res.ok || !data.reply) {
-        setError(data.error === "rate_limited" ? copy.errors.rate_limited : copy.errors.generic);
+        setError(
+          data.error === "rate_limited"
+            ? copy.errors.rate_limited
+            : data.error === "verification_failed"
+              ? copy.errors.verification
+              : copy.errors.generic,
+        );
         setMood("idle");
         return;
       }
@@ -182,6 +212,8 @@ export function ChatWidget() {
               ))}
             </div>
           )}
+
+          <div ref={captchaRef} className="assistant-captcha" />
 
           <form className="assistant-form" onSubmit={onSubmit}>
             <input

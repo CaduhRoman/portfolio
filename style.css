@@ -1474,6 +1474,13 @@ a.proj-link:hover {
   color: var(--ink);
 }
 
+/* Vazio quase sempre; só aparece se o Turnstile pedir um clique. */
+.assistant-captcha:not(:empty) {
+  display: flex;
+  justify-content: center;
+  padding: 0 12px 8px;
+}
+
 .assistant-form {
   display: flex;
   gap: 8px;

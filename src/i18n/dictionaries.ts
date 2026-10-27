@@ -91,6 +91,7 @@ const en = {
     suggestions: ["What is he building?", "What's his stack?", "How can I contact him?"],
     errors: {
       rate_limited: "Too many questions at once! Give me a minute.",
+      verification: "I couldn't confirm you're human. Reload the page and try again.",
       generic: "I couldn't answer right now. Try again, or e-mail Carlos.",
     },
   },
@@ -189,6 +190,7 @@ const pt: Dictionary = {
     suggestions: ["O que ele está construindo?", "Qual a stack dele?", "Como falo com ele?"],
     errors: {
       rate_limited: "Muitas perguntas de uma vez! Me dá um minutinho.",
+      verification: "Não consegui confirmar que você é humano. Recarregue a página e tente de novo.",
       generic: "Não consegui responder agora. Tente de novo ou mande um e-mail pro Carlos.",
     },
   },

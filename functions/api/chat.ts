@@ -6,6 +6,8 @@ import { SYSTEM_PROMPT } from "./_context";
 type Env = {
   GROQ_API_KEY: string;
   GROQ_MODEL?: string;
+  /** Sem ela, o endpoint aceita perguntas sem verificação (útil antes de criar as chaves). */
+  TURNSTILE_SECRET_KEY?: string;
 };
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -46,13 +48,25 @@ function sanitize(input: unknown): Message[] | null {
   return messages.length && messages[messages.length - 1].role === "user" ? messages : null;
 }
 
+// Pergunta ao Cloudflare se o token do Turnstile é legítimo. Cada token só passa uma vez.
+async function verifyTurnstile(token: unknown, secret: string, ip: string) {
+  if (typeof token !== "string" || !token || token.length > 2048) return false;
+  const form = new FormData();
+  form.append("secret", secret);
+  form.append("response", token);
+  form.append("remoteip", ip);
+  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
+  const outcome = (await res.json()) as { success?: boolean };
+  return outcome.success === true;
+}
+
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!env.GROQ_API_KEY) return json({ error: "Assistant is not configured." }, 500);
 
   const ip = request.headers.get("cf-connecting-ip") ?? "local";
   if (rateLimited(ip)) return json({ error: "rate_limited" }, 429);
 
-  let body: { messages?: unknown };
+  let body: { messages?: unknown; token?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -61,6 +75,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const messages = sanitize(body.messages);
   if (!messages) return json({ error: "Invalid messages." }, 400);
+
+  if (env.TURNSTILE_SECRET_KEY && !(await verifyTurnstile(body.token, env.TURNSTILE_SECRET_KEY, ip))) {
+    return json({ error: "verification_failed" }, 403);
+  }
 
   const model = env.GROQ_MODEL || DEFAULT_MODEL;
   // Modelos gpt-oss raciocinam antes de responder; esforço baixo basta e poupa tokens.
@@ -82,17 +100,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   });
 
   if (!upstream.ok) {
-    const detail = await upstream.text();
-    console.error("groq", upstream.status, detail);
-    if (upstream.status === 429) return json({ error: "rate_limited" }, 429);
-    // Só o código da Groq (ex.: model_decommissioned, invalid_api_key), para diagnosticar sem expor detalhes.
-    let code: string | undefined;
-    try {
-      code = (JSON.parse(detail) as { error?: { code?: string } }).error?.code;
-    } catch {
-      // Corpo não era JSON.
-    }
-    return json({ error: "upstream_error", status: upstream.status, code }, 502);
+    // O detalhe fica só no log da Function; o visitante recebe um erro genérico.
+    console.error("groq", upstream.status, await upstream.text());
+    return json({ error: upstream.status === 429 ? "rate_limited" : "upstream_error" }, upstream.status === 429 ? 429 : 502);
   }
 
   const data = (await upstream.json()) as { choices?: { message?: { content?: string } }[] };
