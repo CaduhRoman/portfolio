@@ -4,7 +4,6 @@ import Mascot, { type MascotMood } from "./Mascot";
 
 type Message = { role: "user" | "assistant"; content: string };
 
-const STORAGE_KEY = "assistant-chat";
 const INTRO_KEY = "assistant-intro-seen";
 
 const reducedMotion =
@@ -40,22 +39,12 @@ function flyIn(el: HTMLElement) {
 }
 
 
-// A conversa vive só nesta aba; fechar o site esquece tudo.
-function loadHistory(): Message[] {
-  try {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? (JSON.parse(saved) as Message[]) : [];
-  } catch {
-    return [];
-  }
-}
-
 export function ChatWidget() {
   const { t } = useI18n();
   const copy = t.assistant;
 
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>(loadHistory);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -101,14 +90,6 @@ export function ChatWidget() {
       anim.cancel();
     };
   }, [playIntro]);
-
-  useEffect(() => {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-    } catch {
-      // Sem persistência; a conversa continua na memória.
-    }
-  }, [messages]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
