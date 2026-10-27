@@ -3,7 +3,7 @@
 const en = {
   meta: {
     title: "Carlos Romanow · Software & AI Engineer",
-    description: "Carlos Romanow, software & AI engineer. Projects, education and contact.",
+    description: "Software & AI engineer building agents, games and developer tools. See Taverna Harness, Guerra de Cartas and FramePilot.",
   },
   header: {
     nav: { projects: "My projects", education: "Education", contact: "Contact" },
@@ -84,7 +84,7 @@ export type Dictionary = typeof en;
 const pt: Dictionary = {
   meta: {
     title: "Carlos Romanow · Engenheiro de software & IA",
-    description: "Carlos Romanow, engenheiro de software & IA. Projetos, formação e contato.",
+    description: "Engenheiro de software & IA construindo agentes, jogos e ferramentas para devs. Veja Taverna Harness, Guerra de Cartas e FramePilot.",
   },
   header: {
     nav: { projects: "Meus projetos", education: "Minha formação", contact: "Contato" },
