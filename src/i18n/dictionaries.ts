@@ -23,7 +23,7 @@ const en = {
     photoAlt: "Photo of Carlos Romanow",
   },
   projects: {
-    title: "My projects",
+    title: "Currently building...",
     lead: "What I'm building right now.",
     taverna: {
       badge: "In progress",
@@ -104,7 +104,7 @@ const pt: Dictionary = {
     photoAlt: "Foto de Carlos Romanow",
   },
   projects: {
-    title: "Meus projetos",
+    title: "Trabalhando em...",
     lead: "O que estou construindo agora.",
     taverna: {
       badge: "Em construção",
