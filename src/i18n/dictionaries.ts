@@ -53,7 +53,7 @@ const en = {
     lead: "My academic foundation and what I've collected along the way.",
     degree: {
       level: "Bachelor's",
-      course: "Information Technology",
+      course: "I.T. - Information Technology",
       school: "Federal University of Mato Grosso do Sul",
       status: "In progress",
     },
@@ -76,6 +76,21 @@ const en = {
     title: "Let's build something?",
     text: "Reach out and let's develop a project together.",
     socials: "Contact",
+  },
+  assistant: {
+    name: "Romi",
+    subtitle: "Carlos's AI assistant",
+    open: "Chat with Romi, Carlos's AI assistant",
+    close: "Close chat",
+    greeting: "Hi! I'm Romi ☁️ Ask me anything about Carlos: his projects, stack or how to reach him.",
+    placeholder: "Ask about Carlos…",
+    send: "Send",
+    thinking: "Thinking…",
+    suggestions: ["What is he building?", "What's his stack?", "How can I contact him?"],
+    errors: {
+      rate_limited: "Too many questions at once! Give me a minute.",
+      generic: "I couldn't answer right now. Try again, or e-mail Carlos.",
+    },
   },
 };
 
@@ -134,7 +149,7 @@ const pt: Dictionary = {
     lead: "A base acadêmica e o que fui colecionando no caminho.",
     degree: {
       level: "Graduação",
-      course: "Tecnologia da Informação",
+      course: "T.I. - Tecnologia da Informação",
       school: "Universidade Federal de Mato Grosso do Sul",
       status: "Em andamento",
     },
@@ -157,6 +172,21 @@ const pt: Dictionary = {
     title: "Vamos construir algo?",
     text: "Me contate para desenvolvermos um projeto juntos.",
     socials: "Contato",
+  },
+  assistant: {
+    name: "Romi",
+    subtitle: "Assistente de IA do Carlos",
+    open: "Conversar com Romi, assistente de IA do Carlos",
+    close: "Fechar conversa",
+    greeting: "Oi! Eu sou a Romi ☁️ Pergunte o que quiser sobre o Carlos: projetos, stack ou como falar com ele.",
+    placeholder: "Pergunte sobre o Carlos…",
+    send: "Enviar",
+    thinking: "Pensando…",
+    suggestions: ["O que ele está construindo?", "Qual a stack dele?", "Como falo com ele?"],
+    errors: {
+      rate_limited: "Muitas perguntas de uma vez! Me dá um minutinho.",
+      generic: "Não consegui responder agora. Tente de novo ou mande um e-mail pro Carlos.",
+    },
   },
 };
 

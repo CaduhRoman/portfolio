@@ -1,6 +1,7 @@
 import characterGif from "../assets/character.gif";
 import sideSprite from "../assets/character-side.png";
 import { Avatar } from "./components/Avatar";
+import { ChatWidget } from "./assistant/ChatWidget";
 import { Header } from "./components/Header";
 import { useI18n } from "./i18n";
 import { certifications, education, profile } from "./profile";
@@ -204,6 +205,8 @@ export default function App() {
           © {new Date().getFullYear()} {name}
         </span>
       </footer>
+
+      <ChatWidget />
     </>
   );
 }
