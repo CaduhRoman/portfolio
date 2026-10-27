@@ -88,6 +88,7 @@ const en = {
     placeholder: "Ask about Carlos…",
     send: "Send",
     thinking: "Thinking…",
+    verifyPrompt: "Quick check: tick the Cloudflare box below to confirm you're human.",
     suggestions: ["What is he building?", "What's his stack?", "How can I contact him?"],
     errors: {
       rate_limited: "Too many questions at once! Give me a minute.",
@@ -187,6 +188,7 @@ const pt: Dictionary = {
     placeholder: "Pergunte sobre o Carlos…",
     send: "Enviar",
     thinking: "Pensando…",
+    verifyPrompt: "Só um instante: marque a caixa do Cloudflare abaixo pra confirmar que você é humano.",
     suggestions: ["O que ele está construindo?", "Qual a stack dele?", "Como falo com ele?"],
     errors: {
       rate_limited: "Muitas perguntas de uma vez! Me dá um minutinho.",

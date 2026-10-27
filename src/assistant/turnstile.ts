@@ -37,7 +37,8 @@ function loadScript() {
 
 // Um widget por chat aberto. Cada token vale para uma pergunta só; depois de usado,
 // o widget é resetado e gera o próximo em segundo plano.
-export function createTurnstile(container: HTMLElement, lang: string) {
+// onInteractive avisa quando o Cloudflare passa a pedir um clique (true) e quando ele acaba (false).
+export function createTurnstile(container: HTMLElement, lang: string, onInteractive?: (needed: boolean) => void) {
   let widgetId: string | null = null;
   let token: string | null = null;
   let waiting: ((token: string) => void)[] = [];
@@ -56,7 +57,10 @@ export function createTurnstile(container: HTMLElement, lang: string) {
         failed = [];
       },
       "expired-callback": () => (token = null),
+      "before-interactive-callback": () => onInteractive?.(true),
+      "after-interactive-callback": () => onInteractive?.(false),
       "error-callback": () => {
+        onInteractive?.(false);
         failed.forEach((reject) => reject(new Error("turnstile")));
         waiting = [];
         failed = [];

@@ -49,6 +49,8 @@ export function ChatWidget() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // O Cloudflare pediu um clique na caixa de verificação.
+  const [needsCheck, setNeedsCheck] = useState(false);
   const [mood, setMood] = useState<MascotMood>("idle");
   const [hovered, setHovered] = useState(false);
   const [poke, setPoke] = useState(0);
@@ -66,11 +68,12 @@ export function ChatWidget() {
   // O Turnstile só existe com o painel aberto; o token da primeira pergunta já vai sendo gerado.
   useEffect(() => {
     if (!open || !SITE_KEY || !captchaRef.current) return;
-    const ts = createTurnstile(captchaRef.current, lang);
+    const ts = createTurnstile(captchaRef.current, lang, setNeedsCheck);
     turnstile.current = ts;
     return () => {
       ts.destroy();
       turnstile.current = null;
+      setNeedsCheck(false);
     };
   }, [open, lang]);
 
@@ -199,7 +202,9 @@ export function ChatWidget() {
                 {m.content}
               </p>
             ))}
-            {loading && <p className="bubble bubble--assistant bubble--typing">{copy.thinking}</p>}
+            {loading && (
+              <p className="bubble bubble--assistant bubble--typing">{needsCheck ? copy.verifyPrompt : copy.thinking}</p>
+            )}
             {error && <p className="assistant-error">{error}</p>}
           </div>
 
