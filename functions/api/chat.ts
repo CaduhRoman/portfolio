@@ -10,7 +10,7 @@ type Env = {
 
 type Message = { role: "user" | "assistant"; content: string };
 
-const DEFAULT_MODEL = "llama-3.3-70b-versatile";
+const DEFAULT_MODEL = "openai/gpt-oss-20b";
 const MAX_HISTORY = 10;
 const MAX_CHARS = 600;
 
@@ -62,6 +62,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const messages = sanitize(body.messages);
   if (!messages) return json({ error: "Invalid messages." }, 400);
 
+  const model = env.GROQ_MODEL || DEFAULT_MODEL;
+  // Modelos gpt-oss raciocinam antes de responder; esforço baixo basta e poupa tokens.
+  const reasoning = model.startsWith("openai/gpt-oss") ? { reasoning_effort: "low" } : {};
+
   const upstream = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -69,19 +73,30 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: env.GROQ_MODEL || DEFAULT_MODEL,
+      model,
+      ...reasoning,
       messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
       temperature: 0.5,
-      max_tokens: 300,
+      max_tokens: 800,
     }),
   });
 
   if (!upstream.ok) {
-    console.error("groq", upstream.status, await upstream.text());
-    return json({ error: upstream.status === 429 ? "rate_limited" : "upstream_error" }, upstream.status === 429 ? 429 : 502);
+    const detail = await upstream.text();
+    console.error("groq", upstream.status, detail);
+    if (upstream.status === 429) return json({ error: "rate_limited" }, 429);
+    // Só o código da Groq (ex.: model_decommissioned, invalid_api_key), para diagnosticar sem expor detalhes.
+    let code: string | undefined;
+    try {
+      code = (JSON.parse(detail) as { error?: { code?: string } }).error?.code;
+    } catch {
+      // Corpo não era JSON.
+    }
+    return json({ error: "upstream_error", status: upstream.status, code }, 502);
   }
 
   const data = (await upstream.json()) as { choices?: { message?: { content?: string } }[] };
-  const reply = data.choices?.[0]?.message?.content?.trim();
+  // O chat mostra texto puro; tira o negrito em markdown que o modelo às vezes usa mesmo instruído a não usar.
+  const reply = data.choices?.[0]?.message?.content?.replace(/\*\*(.+?)\*\*/g, "$1").trim();
   return reply ? json({ reply }) : json({ error: "upstream_error" }, 502);
 };
